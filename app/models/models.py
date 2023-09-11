@@ -19,6 +19,7 @@ class User(Base):
     last_name: Mapped[str]
     phone_number: Mapped[str]
     wallet: Mapped['Wallet'] = relationship('Wallet', uselist=False, back_populates="user", cascade="all, delete-orphan")
+    withdrawals: Mapped['Withdraw'] = relationship('Wallet', uselist=False, back_populates="user", cascade="all, delete-orphan")
     password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     api_key: Mapped[str] = mapped_column(String, default=api_key_gen, unique=True, nullable=True)
@@ -96,4 +97,12 @@ class Withdraw(Base):
     __tablename__ = 'withdrawals'
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=unique_id)
-    user_id: Mapped[str] = mapped_column(String, ForeignKey('user.id'), nullable=False)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey('users.id'), nullable=False)
+    wallet_id: Mapped[str] = mapped_column(String, ForeignKey("wallets.id"), nullable=False)
+    wallet: Mapped[str] = relationship("Wallet", back_populates="payments")
+    user: Mapped[str] = relationship("User", back_populates="withdrawals")
+    amount: Mapped[Decimal] = mapped_column(DECIMAL, nullable=False, default=0.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+
