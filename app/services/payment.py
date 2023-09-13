@@ -11,6 +11,9 @@ from app.utils import error_response
 
 
 def pay_with_wallet(wallet_address: uuid.UUID, pay: PaymentSchema, user: User, db: session):
+    """
+    - A helper function that allow user to pay with wallet
+    """
     pay_to_wallet = db.query(Wallet).filter(Wallet.wallet_address == wallet_address).first()
     pay_from_wallet = db.query(Wallet).filter(Wallet.wallet_address == user.wallet.wallet_address).first()
 
@@ -44,8 +47,14 @@ def pay_with_wallet(wallet_address: uuid.UUID, pay: PaymentSchema, user: User, d
 
 
 def user_payments(db: Session, user: User):
+    """
+    - This helper function get user payment history from the database
+    """
     return db.query(Payment).filter(Payment.user_id == user.id).all()
 
 
 def payment_details(payment_id: str, db: Session, user: User):
+    """
+    - This helper function get payment details from the database
+    """
     return db.query(Payment).filter(Payment.id == payment_id).filter(Payment.user_id == user.id).first()
