@@ -11,8 +11,12 @@ from app.utils import error_response
 
 
 def make_transfer(wallet_address: uuid.UUID, transfer: TransferSchema, user: User, db: session):
+    """
+    - Helper function to transfer from wallet tp wallet
+    """
     transfer_to_wallet = db.query(Wallet).filter(Wallet.wallet_address == wallet_address).first()
     transfer_from_wallet = db.query(Wallet).filter(Wallet.wallet_address == user.wallet.wallet_address).first()
+
     if not transfer_to_wallet:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{transfer_to_wallet.id} not Found')
 
@@ -22,7 +26,7 @@ def make_transfer(wallet_address: uuid.UUID, transfer: TransferSchema, user: Use
     if transfer_from_wallet.wallet_address == transfer_to_wallet.wallet_address:
         error_response.invalid_exception('Not allowed. You cannot transfer to your own wallet!')
 
-    if transfer.amount <= 500:
+    if transfer.amount <= 499:
         error_response.invalid_exception('Invalid amount. Please enter a minimum amount of N 500!')
 
     try:
@@ -53,12 +57,21 @@ def make_transfer(wallet_address: uuid.UUID, transfer: TransferSchema, user: Use
 
 
 def user_transfers(user_id: str, db: Session):
+    """
+    - Helper function to get transfers by user
+    """
     return db.query(Transfer).filter(Transfer.user_id == user_id).all()
 
 
 def transfer_details(transfer_id: str, db: Session):
+    """
+    - Get transfer details
+    """
     return db.query(Transfer).filter(Transfer.id == transfer_id).first()
 
 
 def all_transfers(db: Session):
+    """
+    Get all transfers from database
+    """
     return db.query(Transfer).all()

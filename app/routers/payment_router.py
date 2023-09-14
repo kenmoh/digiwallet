@@ -16,10 +16,16 @@ payment_router = APIRouter(prefix='/api/payments', tags=['Payments'])
 
 @payment_router.post('', status_code=status.HTTP_201_CREATED)
 def pay_from_wallet(wallet_address: uuid.UUID, pay: PaymentSchema, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> WalletResponseSchema:
-
+    """
+    - **Pay with wallet
+    - This route allow user to pay a merchant with their wallet
+    """
     return payment.pay_with_wallet(wallet_address=wallet_address, pay=pay, user=current_user, db=db)
 
 
 @payment_router.get('/{payment_id}', status_code=status.HTTP_200_OK)
 def get_payment_details(payment_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> PaymentResponseSchema:
+    """
+    - Get payment details of a transaction
+    """
     return payment.payment_details(payment_id, db, current_user)

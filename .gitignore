@@ -1,3 +1,4 @@
 .env
 .dockerignore
 .idea
+digiwallet_env
